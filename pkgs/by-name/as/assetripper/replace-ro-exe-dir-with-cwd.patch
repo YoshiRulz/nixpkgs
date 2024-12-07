@@ -1,5 +1,22 @@
+From 80093f43ed0356aaa709ceedc6ecc1891fa8f190 Mon Sep 17 00:00:00 2001
+From: YoshiRulz <OSSYoshiRulz+git@gmail.com>
+Date: Mon, 9 Dec 2024 18:47:41 +1000
+Subject: [PATCH] replace-ro-exe-dir-with-cwd
+
+---
+ Source/AssetRipper.IO.Files/Utils/TemporaryFileStorage.cs | 2 +-
+ Source/AssetRipper.Import/Utils/ExecutingDirectory.cs     | 2 +-
+ Source/AssetRipper.Tools.CabMapGenerator/Program.cs       | 2 +-
+ Source/AssetRipper.Tools.DependenceGrapher/Program.cs     | 2 +-
+ Source/AssetRipper.Tools.FileExtractor/Program.cs         | 2 +-
+ Source/AssetRipper.Tools.JsonSerializer/Program.cs        | 2 +-
+ Source/AssetRipper.Tools.RawTextureExtractor/Program.cs   | 2 +-
+ Source/AssetRipper.Tools.SystemTester/Program.cs          | 2 +-
+ Source/AssetRipper.Tools.TypeTreeExtractor/Program.cs     | 2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
+
 diff --git a/Source/AssetRipper.IO.Files/Utils/TemporaryFileStorage.cs b/Source/AssetRipper.IO.Files/Utils/TemporaryFileStorage.cs
-index e5b8a41..ef8cdc5 100644
+index a146ba41b..78ee62a58 100644
 --- a/Source/AssetRipper.IO.Files/Utils/TemporaryFileStorage.cs
 +++ b/Source/AssetRipper.IO.Files/Utils/TemporaryFileStorage.cs
 @@ -2,7 +2,7 @@
@@ -9,10 +26,10 @@ index e5b8a41..ef8cdc5 100644
 -	private static string ExecutingDirectory => AppContext.BaseDirectory;
 +	private static string ExecutingDirectory => System.Environment.CurrentDirectory;
  
- 	public static string LocalTemporaryDirectory { get; } = Path.Combine(ExecutingDirectory, "temp", GetRandomString()[0..4]);
+ 	public static string LocalTemporaryDirectory { get; } = Path.Join(ExecutingDirectory, "temp", GetRandomString()[0..4]);
  
 diff --git a/Source/AssetRipper.Import/Utils/ExecutingDirectory.cs b/Source/AssetRipper.Import/Utils/ExecutingDirectory.cs
-index 9a510a0..ecd281f 100644
+index 9a7ce5d48..9e7bac929 100644
 --- a/Source/AssetRipper.Import/Utils/ExecutingDirectory.cs
 +++ b/Source/AssetRipper.Import/Utils/ExecutingDirectory.cs
 @@ -4,7 +4,7 @@
@@ -25,93 +42,96 @@ index 9a510a0..ecd281f 100644
  
  		public static DirectoryInfo Info { get; }
 diff --git a/Source/AssetRipper.Tools.CabMapGenerator/Program.cs b/Source/AssetRipper.Tools.CabMapGenerator/Program.cs
-index 244eb02..a5f9e7a 100644
+index 5934a09ea..b69524b22 100644
 --- a/Source/AssetRipper.Tools.CabMapGenerator/Program.cs
 +++ b/Source/AssetRipper.Tools.CabMapGenerator/Program.cs
 @@ -30,7 +30,7 @@ namespace AssetRipper.Tools.CabMapGenerator
  
  				if (string.IsNullOrEmpty(outputFile))
  				{
--					outputFile = Path.Combine(AppContext.BaseDirectory, "cabmap.json");
-+					outputFile = Path.Combine(System.Environment.CurrentDirectory, "cabmap.json");
+-					outputFile = Path.Join(AppContext.BaseDirectory, "cabmap.json");
++					outputFile = Path.Join(System.Environment.CurrentDirectory, "cabmap.json");
  				}
  				using FileStream stream = File.Create(outputFile);
  				Dictionary<string, string> map = new();
 diff --git a/Source/AssetRipper.Tools.DependenceGrapher/Program.cs b/Source/AssetRipper.Tools.DependenceGrapher/Program.cs
-index 5b0ba5f..6d66d63 100644
+index d18c31bc9..d87e3e5e5 100644
 --- a/Source/AssetRipper.Tools.DependenceGrapher/Program.cs
 +++ b/Source/AssetRipper.Tools.DependenceGrapher/Program.cs
 @@ -96,7 +96,7 @@ namespace AssetRipper.Tools.DependenceGrapher
  				List<IAssetFilter> filters = CreateFilterList(name, className, classID, pathID);
  				if (string.IsNullOrEmpty(outputFile))
  				{
--					outputFile = Path.Combine(AppContext.BaseDirectory, "output.txt");
-+					outputFile = Path.Combine(System.Environment.CurrentDirectory, "output.txt");
+-					outputFile = Path.Join(AppContext.BaseDirectory, "output.txt");
++					outputFile = Path.Join(System.Environment.CurrentDirectory, "output.txt");
  				}
  				using FileStream stream = File.Create(outputFile);
  				using TextWriter writer = new StreamWriter(stream);
 diff --git a/Source/AssetRipper.Tools.FileExtractor/Program.cs b/Source/AssetRipper.Tools.FileExtractor/Program.cs
-index 3e9869a..5685909 100644
+index 62827cb37..fea1a6b2a 100644
 --- a/Source/AssetRipper.Tools.FileExtractor/Program.cs
 +++ b/Source/AssetRipper.Tools.FileExtractor/Program.cs
 @@ -7,7 +7,7 @@ namespace AssetRipper.Tools.FileExtractor
  {
  	internal class Program
  	{
--		private static readonly string outputDirectory = Path.Combine(AppContext.BaseDirectory, "Output");
-+		private static readonly string outputDirectory = Path.Combine(System.Environment.CurrentDirectory, "Output");
+-		private static readonly string outputDirectory = Path.Join(AppContext.BaseDirectory, "Output");
++		private static readonly string outputDirectory = Path.Join(System.Environment.CurrentDirectory, "Output");
  
  		static void Main(string[] args)
  		{
 diff --git a/Source/AssetRipper.Tools.JsonSerializer/Program.cs b/Source/AssetRipper.Tools.JsonSerializer/Program.cs
-index d75b815..410bdd3 100644
+index 726d8316f..4e79f4d5a 100644
 --- a/Source/AssetRipper.Tools.JsonSerializer/Program.cs
 +++ b/Source/AssetRipper.Tools.JsonSerializer/Program.cs
 @@ -10,7 +10,7 @@ namespace AssetRipper.Tools.JsonSerializer;
  
  internal static class Program
  {
--	private static readonly string outputDirectory = Path.Combine(AppContext.BaseDirectory, "Output");
-+	private static readonly string outputDirectory = Path.Combine(System.Environment.CurrentDirectory, "Output");
+-	private static readonly string outputDirectory = Path.Join(AppContext.BaseDirectory, "Output");
++	private static readonly string outputDirectory = Path.Join(System.Environment.CurrentDirectory, "Output");
  
  	static void Main(string[] args)
  	{
 diff --git a/Source/AssetRipper.Tools.RawTextureExtractor/Program.cs b/Source/AssetRipper.Tools.RawTextureExtractor/Program.cs
-index 2357237..cfee7a1 100644
+index bbcd5b1d1..2b2108354 100644
 --- a/Source/AssetRipper.Tools.RawTextureExtractor/Program.cs
 +++ b/Source/AssetRipper.Tools.RawTextureExtractor/Program.cs
-@@ -19,7 +19,7 @@ namespace AssetRipper.Tools.RawTextureExtractor
+@@ -18,7 +18,7 @@ namespace AssetRipper.Tools.RawTextureExtractor
  {
  	internal static class Program
  	{
--		private static readonly string outputDirectory = Path.Combine(AppContext.BaseDirectory, "Output");
-+		private static readonly string outputDirectory = Path.Combine(System.Environment.CurrentDirectory, "Output");
+-		private static readonly string outputDirectory = Path.Join(AppContext.BaseDirectory, "Output");
++		private static readonly string outputDirectory = Path.Join(System.Environment.CurrentDirectory, "Output");
  
  		static void Main(string[] args)
  		{
 diff --git a/Source/AssetRipper.Tools.SystemTester/Program.cs b/Source/AssetRipper.Tools.SystemTester/Program.cs
-index 0f5b46a..0e2866c 100644
+index 2fb1cbb35..3b52e85a5 100644
 --- a/Source/AssetRipper.Tools.SystemTester/Program.cs
 +++ b/Source/AssetRipper.Tools.SystemTester/Program.cs
 @@ -23,7 +23,7 @@ namespace AssetRipper.Tools.SystemTester
  			}
  			else
  			{
--				Rip(args, Path.Combine(AppContext.BaseDirectory, "Ripped"));
-+				Rip(args, Path.Combine(System.Environment.CurrentDirectory, "Ripped"));
+-				Rip(args, Path.Join(AppContext.BaseDirectory, "Ripped"));
++				Rip(args, Path.Join(System.Environment.CurrentDirectory, "Ripped"));
  			}
  		}
  
 diff --git a/Source/AssetRipper.Tools.TypeTreeExtractor/Program.cs b/Source/AssetRipper.Tools.TypeTreeExtractor/Program.cs
-index 66f27e9..083c09f 100644
+index 8c32d8900..ac7ad5c34 100644
 --- a/Source/AssetRipper.Tools.TypeTreeExtractor/Program.cs
 +++ b/Source/AssetRipper.Tools.TypeTreeExtractor/Program.cs
 @@ -7,7 +7,7 @@ namespace AssetRipper.Tools.TypeTreeExtractor
  {
  	internal static class Program
  	{
--		private static readonly string outputDirectory = System.IO.Path.Combine(AppContext.BaseDirectory, "Output");
-+		private static readonly string outputDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Output");
+-		private static readonly string outputDirectory = System.IO.Path.Join(AppContext.BaseDirectory, "Output");
++		private static readonly string outputDirectory = System.IO.Path.Join(System.Environment.CurrentDirectory, "Output");
  
  		static void Main(string[] args)
  		{
+-- 
+2.44.1
+

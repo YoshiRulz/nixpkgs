@@ -10,13 +10,13 @@
 
 buildDotnetModule (finalAttrs: {
   pname = "assetripper";
-  version = "1.1.3";
+  version = "1.1.8";
 
   src = fetchFromGitHub {
     owner = "AssetRipper";
     repo = "AssetRipper";
     tag = finalAttrs.version;
-    hash = "sha256-KSCM4HY+IjbWnhfOiTxp3WEJPjeOgPo4r9p1CjvBshs=";
+    hash = "sha256-y2Fu2ubRf0SD6NSDOGA8/HRUr1+0Zuy6A1CJ46Eld1A=";
   };
 
   # Until https://github.com/AssetRipper/AssetRipper/issues/1414 is resolved.
@@ -62,8 +62,8 @@ buildDotnetModule (finalAttrs: {
 
   executables = [ "AssetRipper.GUI.Free" ];
 
-  dotnet-sdk = dotnetCorePackages.sdk_8_0;
-  dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
+  dotnet-sdk = dotnetCorePackages.sdk_9_0;
+  dotnet-runtime = finalAttrs.dotnet-sdk.aspnetcore;
 
   meta = {
     description = "Tool for extracting assets from Unity serialized files and asset bundles";
