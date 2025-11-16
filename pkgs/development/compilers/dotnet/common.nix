@@ -13,7 +13,7 @@
   # TODO: this should probably be postInstallCheck
   # TODO: send output to /dev/null
   installCheckPhase = args.installCheckPhase or "" + ''
-    $out/bin/dotnet --info
+    DOTNET_CLI_HOME=$HOME $out/bin/dotnet --info
   '';
 
   # TODO: move this to sdk section?
