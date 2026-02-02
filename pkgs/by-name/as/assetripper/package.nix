@@ -4,6 +4,7 @@
   autoPatchelfHook,
   buildDotnetModule,
   fetchFromGitHub,
+  fetchpatch,
   dbus,
   dotnetCorePackages,
 }:
@@ -18,6 +19,20 @@ buildDotnetModule (finalAttrs: {
     tag = finalAttrs.version;
     hash = "sha256-sqlZsUTeLyHHESNtC07F2FjgLXnuqgoPYRcgE57sq5k=";
   };
+
+  patches = [
+    # pending https://github.com/AssetRipper/AssetRipper/pull/2057
+    (fetchpatch {
+      url = "https://github.com/YoshiRulz/AssetRipper/commit/251529025844f09e5ab678b7b004de374f43af7c.patch";
+      hash = "sha256-dktR2rkv6VCdCpCM2AW0f0gseiM+MdGLwGaodlLvIgk=";
+    })
+
+    # Add CLI
+    (fetchpatch {
+      url = "https://github.com/YoshiRulz/AssetRipper/commit/5cd40c73e2eab3ef9cd2eb3c301c999bcf9a2524.patch";
+      hash = "sha256-0nA9j+Us4kUTr8AwQgg4kDJfp/3k6phN+OTPQzzKIus=";
+    })
+  ];
 
   buildInputs = [
     dbus
@@ -40,6 +55,7 @@ buildDotnetModule (finalAttrs: {
   # Make the main executable available under a more intuitive name.
   postInstall = ''
     mkdir -p $out/bin
+    ln -rs $out/bin/AssetRipper.CLI $out/bin/assetripper-cli
     ln -rs $out/bin/AssetRipper.GUI.Free $out/bin/AssetRipper
   '';
 
@@ -53,7 +69,7 @@ buildDotnetModule (finalAttrs: {
     runHook postFixup
   '';
 
-  projectFile = "Source/AssetRipper.GUI.Free/AssetRipper.GUI.Free.csproj";
+  projectFile = builtins.map (proj: "Source/${proj}/${proj}.csproj") finalAttrs.executables;
 
   # Error: "PublishTrimmed is implied by native compilation and cannot be disabled."
   # We need to override the project settings and disable native AoT compilation
@@ -62,7 +78,7 @@ buildDotnetModule (finalAttrs: {
 
   nugetDeps = ./deps.json;
 
-  executables = [ "AssetRipper.GUI.Free" ];
+  executables = [ "AssetRipper.CLI" "AssetRipper.GUI.Free" ];
 
   dotnet-sdk = dotnetCorePackages.sdk_10_0;
   dotnet-runtime = finalAttrs.dotnet-sdk.aspnetcore;
@@ -71,7 +87,7 @@ buildDotnetModule (finalAttrs: {
     description = "Tool for extracting assets from Unity serialized files and asset bundles";
     homepage = "https://github.com/AssetRipper/AssetRipper";
     license = lib.licenses.gpl3Only;
-    mainProgram = "AssetRipper";
+    mainProgram = "assetripper-cli";
     maintainers = with lib.maintainers; [
       YoshiRulz
       toasteruwu
