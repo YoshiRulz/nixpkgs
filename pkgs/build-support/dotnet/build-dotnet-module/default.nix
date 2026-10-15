@@ -238,6 +238,8 @@ stdenvNoCC.mkDerivation (args // {
 
         export tmp=$(mktemp -td "deps-${pname}-XXXXXX")
         HOME=$tmp/home
+        export TMPDIR="$tmp/.tmp"
+        mkdir "$HOME" "$TMPDIR"
 
         exitTrap() {
             test -n "''${ranTrap-}" && return
